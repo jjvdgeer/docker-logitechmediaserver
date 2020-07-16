@@ -12,7 +12,7 @@ ENV PGID $PGID
 #ENV TZ Europe/Oslo
 
 # 7.9.2 final release, 14th Jan 2020.
-ARG LMSDEB=http://downloads.slimdevices.com/LogitechMediaServer_v7.9.2/logitechmediaserver_7.9.2_arm.deb
+ARG LMSDEB=http://downloads.slimdevices.com/LogitechMediaServer_v7.9.2/logitechmediaserver_7.9.2_all.deb
 
 RUN apt-get update -o Acquire::AllowInsecureRepositories=true && \
     apt-get install -y --allow-unauthenticated \
