@@ -1,4 +1,4 @@
-FROM buildpack-deps:buster-curl
+FROM arm32v7/ubuntu:latest
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -9,12 +9,12 @@ ARG PUID=819
 ARG PGID=819
 ENV PUID $PUID
 ENV PGID $PGID
+#ENV TZ Europe/Oslo
 
 # 7.9.2 final release, 14th Jan 2020.
-ARG LMSDEB=http://downloads.slimdevices.com/LogitechMediaServer_v7.9.2/logitechmediaserver_7.9.2_all.deb
+ARG LMSDEB=http://downloads.slimdevices.com/LogitechMediaServer_v7.9.2/logitechmediaserver_7.9.2_arm.deb
 
-RUN echo "deb http://www.deb-multimedia.org buster main non-free" | tee -a /etc/apt/sources.list && \
-    apt-get update -o Acquire::AllowInsecureRepositories=true && apt-get install -y --allow-unauthenticated deb-multimedia-keyring && \
+RUN apt-get update -o Acquire::AllowInsecureRepositories=true && \
     apt-get install -y --allow-unauthenticated \
     perl \
     libcrypt-openssl-rsa-perl libio-socket-inet6-perl libwww-perl libio-socket-ssl-perl \
@@ -28,10 +28,14 @@ RUN echo "deb http://www.deb-multimedia.org buster main non-free" | tee -a /etc/
     ffmpeg \
     wavpack \
     patch \
+    curl \
+    tzdata \
     --no-install-recommends && \
     apt-get upgrade -y --allow-unauthenticated && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    ln -fs /usr/share/zoneinfo/Europe/Oslo /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
 
 RUN curl -o /tmp/lms.deb $LMSDEB && \
     dpkg -i /tmp/lms.deb && \
