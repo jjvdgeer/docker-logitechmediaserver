@@ -37,7 +37,8 @@ RUN apt-get update -o Acquire::AllowInsecureRepositories=true && \
     ln -fs /usr/share/zoneinfo/Europe/Oslo /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata
 
-RUN curl -o /tmp/lms.deb $LMSDEB && \
+RUN echo "Downloading LMS package from:" $LMSDEB && \
+    curl -o /tmp/lms.deb $LMSDEB && \
     dpkg -i /tmp/lms.deb && \
     rm -f  /tmp/lms.deb
 
