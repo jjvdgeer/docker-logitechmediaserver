@@ -17,8 +17,7 @@ pipeline {
                 sh 'make update'
                 sh 'make build'
                 script {
-                    tag = """${sh(returnStdout: true, script: "cat lmsdeb.txt | sed 's/.*_\\([0-9\\.~]*\\)_all.deb/\\1/' | sed 
-'s/~/-/'")}"""
+                    tag = """${sh(returnStdout: true, script: "cat lmsdeb.txt | sed 's/.*_\\([0-9\\.~]*\\)_all.deb/\\1/' | sed 's/~/-/'")}"""
                 }
             }
         }
