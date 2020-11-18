@@ -3,6 +3,7 @@ pipeline {
         imageName = 'jjvdgeer/logitechmediaserver'
         registry = "http://qnap:5000/"
         dockerImage = ''
+        tag = ''
     }
     agent { label 'docker' }
     stages {
@@ -16,14 +17,15 @@ pipeline {
                 sh 'make update'
                 sh 'make build'
                 script {
-                    env.TAG = """${sh(returnStdout: true, script: "cat lmsdeb.txt | sed 's/.*_\\([0-9\\.~]*\\)_all.deb/\\1/' | sed 's/~/-/'")}"""
+                    tag = """${sh(returnStdout: true, script: "cat lmsdeb.txt | sed 's/.*_\\([0-9\\.~]*\\)_all.deb/\\1/' | sed 
+'s/~/-/'")}"""
                 }
             }
         }
         stage('Upload image') {
             steps {
                 script {
-                    dockerImage = docker.image("$imageName:${env.TAG}")
+                    dockerImage = docker.image("$imageName:$tag")
                     docker.withRegistry("$registry") {
                         dockerImage.push()
                         dockerImage.push('$BUILD_NUMBER')
@@ -34,7 +36,7 @@ pipeline {
         }
         stage('Cleaning up') {
             steps {
-                sh "docker rmi $imageName:${env.TAG}"
+                sh "docker rmi $imageName:$tag"
             }
         }
     }
